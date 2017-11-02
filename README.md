@@ -12,3 +12,4 @@
 ``` lua
 display.addSpriteFrames("fruit.plist","fruit.png")
 ```
+-   ccui
