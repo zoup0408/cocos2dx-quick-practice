@@ -4,9 +4,10 @@ local MainScene = class("MainScene", function()
 end)
 
 function MainScene:ctor()
-    display.newTTFLabel({text = "Hello, World", size = 64})
-        :align(display.CENTER, display.cx, display.cy)
-        :addTo(self)
+   display.newSprite("mainBG.png")
+		:pos(display.cx,display.cy)
+		:addTo(self)
+		
 end
 
 function MainScene:onEnter()
