@@ -1,4 +1,3 @@
-
 require("config")
 require("cocos.init")
 require("framework.init")
@@ -16,3 +15,5 @@ function MyApp:run()
 end
 
 return MyApp
+
+
