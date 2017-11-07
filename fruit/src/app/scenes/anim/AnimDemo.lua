@@ -2,12 +2,36 @@ local AnimDemo=class("AnimDemo", function()
 	return display.newScene("AnimDemo")
 end)
 function AnimDemo:ctor()
+	self.xCount = 8 -- 水平方向水果数
+	self.yCount = 8 -- 垂直方向水果数
+	self.fruitGap =0
+
+	--  计算水果矩阵左下角的x、y坐标：以矩阵中点对齐屏幕中点来计算，然后再做Y轴修正。
+
 	-- 等待转场特效结束后再加载矩阵
 	self:addNodeEventListener(cc.NODE_EVENT, function(event)
 		if event.name == "enterTransitionFinish" then
-			self:anim()
+			self:init()
 		end
 	end)
+end
+
+function AnimDemo:init()
+	for x=1,self.xCount do
+		for y=1,self.yCount do
+			self:dropFruit(x,y)
+		end
+	end
+end
+
+function AnimDemo:dropFruit(x,y)
+	local ball=display.newSprite("ball_1.png")
+	local startPosition=cc.p(100,100)
+	local endPosition=cc.p(100,300)
+	ball:setPosition(startPosition)
+	local speed=3.2
+	ball:runAction(cc.MoveTo:create(speed,endPosition))
+	self:addChild(ball)
 end
 
 function AnimDemo:anim()

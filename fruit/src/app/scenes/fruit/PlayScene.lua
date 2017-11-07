@@ -135,9 +135,7 @@ function PlayScene:createAndDropFruit(x, y, fruitIndex)
 		if event.name == "ended" then
 			if newFruit.isActive then
 				self:removeActivedFruits()
-				self:
-
-				()
+				self:dropFruits()
 			else
 				self:inactive()
 				self:activeNeighbor(newFruit)

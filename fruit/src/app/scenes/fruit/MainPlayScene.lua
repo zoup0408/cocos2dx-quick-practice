@@ -129,22 +129,20 @@ function MainPlayScene:createAndDropFruit(x, y, fruitIndex)
 
 	-- 绑定触摸事件
 	newFruit:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event)
-		-- if event.name == "ended" then
-		-- 	if newFruit.isActive then
-		-- 		self:removeActivedFruits()
-		-- 		self:
+		if event.name == "ended" then
+			if newFruit.isActive then
+				self:removeActivedFruits()
+				self:dropFruits()
+			else
+				self:inactive()
+				self:activeNeighbor(newFruit)
+				self:showActivesScore()
+			end
+		end
 
-		-- 		()
-		-- 	else
-		-- 		self:inactive()
-		-- 		self:activeNeighbor(newFruit)
-		-- 		self:showActivesScore()
-		-- 	end
-		-- end
-
-		-- if event.name == "began" then
-		-- 	return true
-		-- end
+		if event.name == "began" then
+			return true
+		end
 	end)
 	newFruit:setTouchEnabled(true)
 end

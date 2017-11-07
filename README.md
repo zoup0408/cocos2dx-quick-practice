@@ -37,9 +37,9 @@ self:addNodeEventListener(cc.NODE_EVENT, function(event)
 动画举例：
 ``` lua
 local sprite=display.newSprite("ball_1.png")
-sprite.setPosition(300,300)
+sprite:setPosition(300,300)
 sprite:runAction(action1)
-screen.addChild(sprite)
+screen:addChild(sprite)
 ```
 
 
