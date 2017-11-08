@@ -1,10 +1,17 @@
-local AnimDemo=class("AnimDemo", function()
+ FruitItem=import("app.scenes.fruit.FruitItem")
+
+ local AnimDemo=class("AnimDemo", function()
 	return display.newScene("AnimDemo")
 end)
 function AnimDemo:ctor()
+
 	self.xCount = 8 -- 水平方向水果数
 	self.yCount = 8 -- 垂直方向水果数
 	self.fruitGap =0
+	display.addSpriteFrames("fruit.plist", "fruit.png")
+
+	self.matrixLBX=display.width-FruitItem.getWidth()*self.yCount-self.fruitGap*(self.yCount-1)/2
+	self.matrixLBY=display.height-FruitItem.getWidth()*self.xCount-self.fruitGap*(self.xCount-1)/2-30
 
 	--  计算水果矩阵左下角的x、y坐标：以矩阵中点对齐屏幕中点来计算，然后再做Y轴修正。
 
@@ -19,14 +26,14 @@ end
 function AnimDemo:init()
 	for x=1,self.xCount do
 		for y=1,self.yCount do
-			self:dropFruit(x,y)
+			self:dropFruit(x,y,3)
 		end
 	end
 end
 
-function AnimDemo:dropFruit(x,y)
-	local ball=display.newSprite("ball_1.png")
-	local startPosition=cc.p(100,100)
+function AnimDemo:dropFruit(x,y,fruitIndex)
+	local ball=new FruitItem(x,y,fruitIndex)
+	local startPosition=cc.p(self.matrixLBX+(x-1)*FruitItem.getWidth(),self.matrixLBY+(y-1)*FruitItem.getWidth())
 	local endPosition=cc.p(100,300)
 	ball:setPosition(startPosition)
 	local speed=3.2
