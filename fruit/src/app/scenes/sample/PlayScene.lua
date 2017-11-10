@@ -125,7 +125,8 @@ function PlayScene:createAndDropFruit(x, y, fruitIndex)
     local endPosition = self:positionOfFruit(x, y)
     local startPosition = cc.p(endPosition.x, endPosition.y + display.height / 2)
     newFruit:setPosition(startPosition)
-    local speed = startPosition.y / (2 * display.height)
+    -- local speed = startPosition.y / (2 * display.height)
+    local speed=10
     newFruit:runAction(cc.MoveTo:create(speed, endPosition))
     self.matrix[(y - 1) * self.xCount + x] = newFruit
     self:addChild(newFruit)

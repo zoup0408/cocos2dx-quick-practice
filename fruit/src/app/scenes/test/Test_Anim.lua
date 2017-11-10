@@ -1,14 +1,17 @@
- FruitItem=import("app.scenes.fruit.FruitItem")
+FruitItem = import("app.scenes.fruit.FruitItem")
 
- local AnimDemo=class("AnimDemo", function()
-	return display.newScene("AnimDemo")
+ local Test_Anim=class("Test_Anim", function()
+	return display.newScene("Test_Anim")
 end)
-function AnimDemo:ctor()
+function Test_Anim:ctor()
 
 	self.xCount = 8 -- 水平方向水果数
 	self.yCount = 8 -- 垂直方向水果数
 	self.fruitGap =0
 	display.addSpriteFrames("fruit.plist", "fruit.png")
+	-- 初始化随机数
+	math.newrandomseed()
+
 
 	self.matrixLBX=display.width-FruitItem.getWidth()*self.yCount-self.fruitGap*(self.yCount-1)/2
 	self.matrixLBY=display.height-FruitItem.getWidth()*self.xCount-self.fruitGap*(self.xCount-1)/2-30
@@ -23,25 +26,42 @@ function AnimDemo:ctor()
 	end)
 end
 
-function AnimDemo:init()
+function Test_Anim:init()
+	-- 创建空矩阵
+	self.matrix = {}
 	for x=1,self.xCount do
 		for y=1,self.yCount do
-			self:dropFruit(x,y,3)
+			self:dropFruit(x,y)
 		end
 	end
 end
 
-function AnimDemo:dropFruit(x,y,fruitIndex)
-	local ball=new FruitItem(x,y,fruitIndex)
-	local startPosition=cc.p(self.matrixLBX+(x-1)*FruitItem.getWidth(),self.matrixLBY+(y-1)*FruitItem.getWidth())
-	local endPosition=cc.p(100,300)
-	ball:setPosition(startPosition)
-	local speed=3.2
-	ball:runAction(cc.MoveTo:create(speed,endPosition))
-	self:addChild(ball)
+function Test_Anim:dropFruit(x,y,fruitIndex)
+	local newFruit=FruitItem.new(x,y,fruitIndex)
+	-- local startPosition=cc.p(self.matrixLBX+(x-1)*FruitItem.getWidth(),self.matrixLBY+(y-1)*FruitItem.getWidth())
+	-- local startPosition=self:positionOfStart(x, y)
+	local endPosition=self:positionOfEnd(x,y)
+	local startPosition = cc.p(endPosition.x, endPosition.y + display.height / 2)
+	newFruit:setPosition(startPosition)
+	local speed=10.0
+	newFruit:runAction(cc.MoveTo:create(speed,endPosition))
+	self.matrix[(y - 1) * self.xCount + x] = newFruit
+    self:addChild(newFruit)
 end
 
-function AnimDemo:anim()
+function Test_Anim:positionOfStart(x, y)
+    local px = self.matrixLBX + (FruitItem.getWidth() + self.fruitGap) * (x - 1) + FruitItem.getWidth() / 2
+    local py = self.matrixLBY + (FruitItem.getWidth() + self.fruitGap) * (self.yCount- 1) + FruitItem.getWidth() / 2
+    return cc.p(px, py)
+end
+
+function Test_Anim:positionOfEnd(x, y)
+    local px = self.matrixLBX + (FruitItem.getWidth() + self.fruitGap) * (x - 1) + FruitItem.getWidth() / 2
+    local py = self.matrixLBY + (FruitItem.getWidth() + self.fruitGap) * (y - 1) + FruitItem.getWidth() / 2
+    return cc.p(px, py)
+end
+
+function Test_Anim:anim()
 local screen = cc.Director:getInstance():getRunningScene()  
 local action1 = cc.ScaleTo:create(0.5, 1) --放大 参数:时间和缩放尺寸  
 local action2 = cc.MoveTo:create(0.5, cc.p(300,330)) --移动到某位置  
@@ -66,10 +86,10 @@ sprite:runAction(cc.RepeatForever:create(cc.Sequence:create(cc.Spawn:create(acti
 screen:addChild(sprite)  
 end
 
-function AnimDemo:onEnter()
+function Test_Anim:onEnter()
 end
 
-function AnimDemo:onExit()
+function Test_Anim:onExit()
 end
 
-return AnimDemo
+return Test_Anim
