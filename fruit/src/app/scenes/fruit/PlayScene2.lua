@@ -30,12 +30,13 @@ function PlayScene2:initUI()
 	display.addSpriteFrames("fruit.plist", "fruit.png")
 	-- 背景图片
 	display.newSprite("playBG.png")
-		:pos(display.cx, display.cy)
-		:addTo(self)
+	:pos(display.cx, display.cy)
+	:addTo(self)
 end
 
 function PlayScene2:initMartix()
 	self.actives={}
+	self.matrix={}
 	for y = 1, self.yCount do
 		for x = 1, self.xCount do
 			self:createAndDropFruit(x, y)
@@ -50,6 +51,7 @@ function PlayScene2:createAndDropFruit(x, y, fruitIndex)
 	newFruit:setPosition(startPosition)
 	local speed = startPosition.y / (2 * display.height)
 	newFruit:runAction(cc.MoveTo:create(speed, endPosition))
+	self.matrix[(y - 1) * self.xCount + x] = newFruit
 	self:addChild(newFruit)
 
 	-- 绑定触摸事件
@@ -57,12 +59,12 @@ function PlayScene2:createAndDropFruit(x, y, fruitIndex)
 		if event.name == "ended" then
 		table.insert(self.actives, newFruit)
 		self:inactive()
-		end
+	end
 
-		if event.name == "began" then
-			return true
-		end
-		end)
+	if event.name == "began" then
+		return true
+	end
+	end)
 	newFruit:setTouchEnabled(true)
 end
 
@@ -75,12 +77,30 @@ end
 function PlayScene2:inactive()
 	for _,fruit in pairs(self.actives) do
 		if(fruit.isActive) then
-			fruit:setActive(false)
+			self:activeNeighbor(fruit)
 		else
 			fruit:setActive(true)
 		end
 	end
 	self.actives={}
+end
+
+function PlayScene2:activeNeighbor(fruit)
+	if false==fruit.isActive then
+		fruit.setActive(true)
+		table.insert(self.actives,fruit)
+	else
+		-- 检查fruit左边的水果
+		if (fruit.x - 1) >= 1 then
+			local leftNeighbor = self.matrix[(fruit.y - 1) * self.xCount + fruit.x - 1]
+			if (leftNeighbor.isActive == false) and (leftNeighbor.fruitIndex == fruit.fruitIndex) then
+				leftNeighbor:setActive(true)
+				table.insert(self.actives, leftNeighbor)
+				self:activeNeighbor(leftNeighbor)
+			end
+		end
+	end
+
 end
 
 function PlayScene2:onEnter()
