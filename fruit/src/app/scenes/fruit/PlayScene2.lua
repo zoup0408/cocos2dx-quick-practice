@@ -1,9 +1,13 @@
+--
+-- Author: zoup
+-- Date: 2017-11-14 09:47:37
+--
 FruitItem = import("app.scenes.fruit.FruitItem")
 
-local PlayScene1 = class("PlayScene1", function()
-	return display.newScene("PlayScene1")
+local PlayScene2 = class("PlayScene2", function()
+	return display.newScene("PlayScene2")
 	end)
-function PlayScene1:ctor()
+function PlayScene2:ctor()
 
 	self.xCount = 8 -- 水平方向水果数
 	self.yCount = 8 -- 垂直方向水果数
@@ -22,11 +26,16 @@ function PlayScene1:ctor()
 		end   
 		end)
 end
-function PlayScene1:initUI()
+function PlayScene2:initUI()
 	display.addSpriteFrames("fruit.plist", "fruit.png")
+	-- 背景图片
+	display.newSprite("playBG.png")
+		:pos(display.cx, display.cy)
+		:addTo(self)
 end
 
-function PlayScene1:initMartix()
+function PlayScene2:initMartix()
+	self.actives={}
 	for y = 1, self.yCount do
 		for x = 1, self.xCount do
 			self:createAndDropFruit(x, y)
@@ -34,7 +43,7 @@ function PlayScene1:initMartix()
 	end
 end
 
-function PlayScene1:createAndDropFruit(x, y, fruitIndex)
+function PlayScene2:createAndDropFruit(x, y, fruitIndex)
 	local newFruit = FruitItem.new(x, y, fruitIndex)
 	local endPosition = self:positionOfFruit(x, y)
 	local startPosition = cc.p(endPosition.x, endPosition.y + display.height / 2)
@@ -42,18 +51,42 @@ function PlayScene1:createAndDropFruit(x, y, fruitIndex)
 	local speed = startPosition.y / (2 * display.height)
 	newFruit:runAction(cc.MoveTo:create(speed, endPosition))
 	self:addChild(newFruit)
+
+	-- 绑定触摸事件
+	newFruit:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event)
+		if event.name == "ended" then
+		table.insert(self.actives, newFruit)
+		self:inactive()
+		end
+
+		if event.name == "began" then
+			return true
+		end
+		end)
+	newFruit:setTouchEnabled(true)
 end
 
-function PlayScene1:positionOfFruit(x, y)
+function PlayScene2:positionOfFruit(x, y)
 	local px = self.matrixLBX + (FruitItem.getWidth() + self.fruitGap) * (x - 1) + FruitItem.getWidth() / 2
 	local py = self.matrixLBY + (FruitItem.getWidth() + self.fruitGap) * (y - 1) + FruitItem.getWidth() / 2
 	return cc.p(px, py)
 end
 
-function PlayScene1:onEnter()
+function PlayScene2:inactive()
+	for _,fruit in pairs(self.actives) do
+		if(fruit.isActive) then
+			fruit:setActive(false)
+		else
+			fruit:setActive(true)
+		end
+	end
+	self.actives={}
 end
 
-function PlayScene1:onExit()
+function PlayScene2:onEnter()
 end
 
-return PlayScene1
+function PlayScene2:onExit()
+end
+
+return PlayScene2

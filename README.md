@@ -36,11 +36,37 @@ self:addNodeEventListener(cc.NODE_EVENT, function(event)
 ```
 动画举例：
 ``` lua
-local sprite=display.newSprite("ball_1.png")
-sprite:setPosition(300,300)
-sprite:runAction(action1)
-screen:addChild(sprite)
+local ball=display.newSprite("ball_1.png")
+local startPosition=cc.p(100,100)
+local endPosition=cc.p(100,300)
+ball:setPosition(startPosition)
+local speed=0.2
+ball:runAction(cc.MoveTo:create(speed,endPosition))
+self:addChild(ball)
 ```
+> * 2017-11-14
+> * table
+``` lua
+fruit={"apple","banana","orange" }
+table.insert(fruit,"mango")
+print(fruit[4]);
+print(table.concat(fruit,"-"));
+table.remove(fruit,2)
+print(fruit[1]);
+print(fruit[2]);
+print(fruit[3]);
+print(fruit[4]);
+```
+以下是输出：
+``` lua
+mango
+apple-banana-orange-mango
+apple
+orange
+mango
+nil
+```
+[详见菜鸟lua教程](http://www.runoob.com/lua/lua-tables.html)
 
 
 
