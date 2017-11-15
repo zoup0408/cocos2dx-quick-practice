@@ -57,8 +57,13 @@ function PlayScene2:createAndDropFruit(x, y, fruitIndex)
 	-- 绑定触摸事件
 	newFruit:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event)
 		if event.name == "ended" then
-		table.insert(self.actives, newFruit)
-		self:inactive()
+		if newFruit.isActive then
+			self:removeActivedFruits();
+			self:dropFruits()
+		else
+			self:inactive()
+			self:activeNeighbor(newFruit)
+		end
 	end
 
 	if event.name == "began" then
@@ -74,21 +79,23 @@ function PlayScene2:positionOfFruit(x, y)
 	return cc.p(px, py)
 end
 
-function PlayScene2:inactive()
+function removeActivedFruits()
 	for _,fruit in pairs(self.actives) do
-		if(fruit.isActive) then
-			self:activeNeighbor(fruit)
-		else
-			fruit:setActive(true)
+		if(fruit) then
+			self:removeChild(fruit)
 		end
 	end
-	self.actives={}
+end
+
+function dropFruits()
+end
+
+function PlayScene2:inactive()
 end
 
 function PlayScene2:activeNeighbor(fruit)
 	if false==fruit.isActive then
-		fruit.setActive(true)
-		table.insert(self.actives,fruit)
+		
 	else
 		-- 检查fruit左边的水果
 		if (fruit.x - 1) >= 1 then

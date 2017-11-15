@@ -13,7 +13,7 @@
 display.addSpriteFrames("fruit.plist","fruit.png")
 ```
 > * 2017-11-07
--   cc
+## cc
 cc.FadeIn:create(number) ,淡入
 cc.FadeOut:create(number) ,淡出
 cc.MoveTo:create(speed,position) ,移动
@@ -45,7 +45,7 @@ ball:runAction(cc.MoveTo:create(speed,endPosition))
 self:addChild(ball)
 ```
 > * 2017-11-14
-> * table
+## table
 ``` lua
 fruit={"apple","banana","orange" }
 table.insert(fruit,"mango")
