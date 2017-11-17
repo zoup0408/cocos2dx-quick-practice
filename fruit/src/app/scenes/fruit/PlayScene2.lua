@@ -58,7 +58,7 @@ function PlayScene2:createAndDropFruit(x, y, fruitIndex)
 	newFruit:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event)
 		if event.name == "ended" then
 		if newFruit.isActive then
-			self:removeActivedFruits();
+			self:removeActivedFruits()
 			self:dropFruits()
 		else
 			self:inactive()
@@ -79,35 +79,46 @@ function PlayScene2:positionOfFruit(x, y)
 	return cc.p(px, py)
 end
 
-function removeActivedFruits()
-	for _,fruit in pairs(self.actives) do
-		if(fruit) then
-			self:removeChild(fruit)
+function PlayScene2:removeActivedFruits()
+	for _, fruit in pairs(self.actives) do
+		if (fruit) then
+			-- 从矩阵中移除
+			self.matrix[(fruit.y - 1) * self.xCount + fruit.x] = nil
+			fruit:removeFromParent()
 		end
 	end
+
+	-- 清空高亮数组
+	self.actives = {}
 end
 
-function dropFruits()
+function PlayScene2:dropFruits()
+	
 end
 
 function PlayScene2:inactive()
+	for _, fruit in pairs(self.actives) do
+		if(fruit) then
+			fruit:setActive(false)
+		end
+	end
+	self.actives={}	
 end
 
 function PlayScene2:activeNeighbor(fruit)
-	if false==fruit.isActive then
-		
-	else
-		-- 检查fruit左边的水果
-		if (fruit.x - 1) >= 1 then
-			local leftNeighbor = self.matrix[(fruit.y - 1) * self.xCount + fruit.x - 1]
-			if (leftNeighbor.isActive == false) and (leftNeighbor.fruitIndex == fruit.fruitIndex) then
-				leftNeighbor:setActive(true)
-				table.insert(self.actives, leftNeighbor)
-				self:activeNeighbor(leftNeighbor)
-			end
+	if (false==fruit.isActive) then
+		fruit:setActive(true)
+		table.insert(self.actives, fruit)	
+	end
+	-- 检查fruit左边的水果
+	if (fruit.x - 1) >= 1 then
+		local leftNeighbor = self.matrix[(fruit.y - 1) * self.xCount + fruit.x - 1]
+		if (leftNeighbor.isActive == false) and (leftNeighbor.fruitIndex == fruit.fruitIndex) then
+			leftNeighbor:setActive(true)
+			table.insert(self.actives, leftNeighbor)
+			self:activeNeighbor(leftNeighbor)
 		end
 	end
-
 end
 
 function PlayScene2:onEnter()
